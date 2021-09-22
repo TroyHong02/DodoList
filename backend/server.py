@@ -1,24 +1,5 @@
 from flask import Flask
-import couchbase.subdocument as SD
-
-# needed for any cluster connection
-from couchbase.cluster import Cluster, ClusterOptions
-from couchbase.auth import PasswordAuthenticator
-
-# needed to support SQL++ (N1QL) query
-from couchbase.cluster import QueryOptions
-
-# get a reference to our cluster
-cluster = Cluster('couchbase://localhost', ClusterOptions(
-  PasswordAuthenticator('DodoMan', 'p@ssw0rd')))
-
-# get a reference to our bucket
-cb = cluster.bucket('users')
-
-# collection
-coll = cb.collection('user_data')
-
-
+import db
 
 app = Flask(__name__)
 
@@ -43,20 +24,18 @@ def new_list():
     user = 'username'
     list_name = 'xxx'
     tasks = []
-    coll.mutate_in(user, [SD.array_append('lists', {
-                'list_name' : list_name, 
-                'tasks' : tasks
-            }
-        )]
-    )
+    db.new_list(username, list_name, tasks)
     print('new_list has ran')
 
 @app.route("/getlist", methods=['GET'])
 def get_list():
+    list_name = 'xxx'
+    db.get_list(list_name)
     return 
 
 @app.route("/getlists", methods=['GET'])
 def get_lists():
+    db.get_lists()
     return 
 
 @app.route("/updatelist", methods=['POST'])
