@@ -3,7 +3,7 @@ from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 
 db = client['dodolist']
-collection = db['userdata']
+collection = db['users']
 
 default_user = {
     'email': 'username@example.com',

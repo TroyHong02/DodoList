@@ -24,7 +24,7 @@ def new_list():
     user = 'username'
     list_name = 'xxx'
     tasks = []
-    db.new_list(username, list_name, tasks)
+    db.new_list(user, list_name, tasks)
     print('new_list has ran')
 
 @app.route("/getlist", methods=['GET'])
