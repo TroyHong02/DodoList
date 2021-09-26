@@ -78,6 +78,7 @@ def get_lists(email):
     if not user:
         return {'success': False, 'message': 'user not found'}
 
+    print("user get lists:")
     print(user)
 
     res = [None] * len(user['lists'])
@@ -179,13 +180,20 @@ def delete_list(email, list_id):
     lst = lists.find_one({'_id': list_id})
     if not lst:
         return {'success': False, 'message': 'list not found'}
-    
-    tasks = get_tasks(email, list_id)['data']
 
-    for task in tasks:
-        delete_task(email, list_id, task['_id'])
+    res = users.update({'_id': user['_id']}, {
+        '$pull': {'lists': list_id}
+    })
+    #TODO interpret res / error handling
     
-    lists.delete_one({'_id': list_id})
+    task_ids = lst['tasks']
+    for task_id in task_ids:
+        # we dont really want to call delete_task here, there
+        # are certain guarantees that we have here that we shouldnt 
+        # bother checking again. i.e list existing
+        res = tasks.delete_one({'_id': task_id})
+    
+    res = lists.delete_one({'_id': list_id})
 
     return {'success': True, 'message': 'list successfully deleted'}
 
