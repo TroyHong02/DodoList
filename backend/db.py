@@ -57,6 +57,7 @@ def new_list(email, list_name, tasks):
         '$push': { 'lists': _id }
     })
 
+    print(user)
     return {'success': True, 'message': 'new list created'}
 
 def get_list(email, id):
@@ -86,4 +87,35 @@ def get_lists(email):
         res[i] = lists.find_one({'_id': _id})
     
     return {'success': True, 'data': list(res)}
+
+
+def new_task(email, list_id, task_name, task_desc, due_date):
+#WORK IN PROGRESS!!!!!! STUCK ON TASKS: What is task when you initialize a list? []? the tasks object? (didnt work before), need to review documentation!
+    print('a')
+    user = users.find_one({'email': email})
+    if not user:
+        print('new_task')
+        return {'success': False, 'message': 'user not found'}
     
+    lst = lists.find_one({'_id' : list_id})
+    if not lst:
+        return {'success': False, 'message': 'list not found'}
+    
+    new_task = {
+        "task_name": task_name,
+        "task_desc": task_desc,
+        "inserted_time": 'yo mama',
+        "due_date": due_date,
+        "status": 'yo papa'
+    }
+        
+    res = tasks.insert_one(new_task)
+
+    _id = res.inserted_id
+
+    # TODO unique array needed?
+    lists.update({'_id': list_id}, {
+        '$push': { 'tasks': _id }
+    })
+    print(res)
+    return {'success': True, 'message': 'task successfully created'}
