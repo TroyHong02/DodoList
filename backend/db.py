@@ -90,11 +90,9 @@ def get_lists(email):
 
 
 def new_task(email, list_id, task_name, task_desc, due_date):
-#WORK IN PROGRESS!!!!!! STUCK ON TASKS: What is task when you initialize a list? []? the tasks object? (didnt work before), need to review documentation!
-    print('a')
+
     user = users.find_one({'email': email})
     if not user:
-        print('new_task')
         return {'success': False, 'message': 'user not found'}
     
     lst = lists.find_one({'_id' : list_id})
@@ -119,3 +117,76 @@ def new_task(email, list_id, task_name, task_desc, due_date):
     })
     print(res)
     return {'success': True, 'message': 'task successfully created'}
+
+def get_task(email, task_id):
+
+    user = users.find_one({'email': email})
+    if not user:
+        return {'success': False, 'message': 'user not found'}
+    
+
+    res = tasks.find_one({'_id': task_id})
+    if not res:
+        return {'success': False, 'message': 'task not found'}
+
+    return {'success': True, 'data': res}
+
+def get_tasks(email, list_id):
+
+    user = users.find_one({'email': email})
+    if not user:
+        return {'success': False, 'message': 'user not found'}
+
+    lst = lists.find_one({'_id': list_id})
+    if not lst:
+        return {'success': False, 'message': 'list not found'}
+
+    res = [None] * len(lst['tasks'])
+
+    for i in range(len(lst['tasks'])):
+        _id = lst['tasks'][i]
+        res[i] = tasks.find_one({'_id': _id})
+    
+    return {'success': True, 'data': list(res)}
+
+#last
+# def update_task():
+
+def delete_task(email, list_id, task_id):
+
+    user = users.find_one({'email': email})
+    if not user:
+        return {'success': False, 'message': 'user not found'}
+
+    lst = lists.find_one({'_id': list_id})
+    if not lst:
+        return {'success': False, 'message': 'list not found'}
+    
+    task = tasks.find_one({'_id': task_id})
+    if not task:
+        return{'success': False, 'message': 'task not found'}
+    
+    tasks.delete_one({'_id': task_id})
+
+    return {'success': True, 'message': 'task successfully deleted'}
+
+def delete_list(email, list_id):
+
+    user = users.find_one({'email': email})
+    if not user:
+        return {'success': False, 'message': 'user not found'}
+
+    lst = lists.find_one({'_id': list_id})
+    if not lst:
+        return {'success': False, 'message': 'list not found'}
+    
+    tasks = get_tasks(email, list_id)['data']
+
+    for task in tasks:
+        delete_task(email, list_id, task['_id'])
+    
+    lists.delete_one({'_id': list_id})
+
+    return {'success': True, 'message': 'list successfully deleted'}
+
+
