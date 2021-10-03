@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+from bson import json_util
 import db
 
 app = Flask(__name__)
@@ -19,32 +20,73 @@ def login():
 def logout():
     return 
 
+
+"""
+json_util.dumps() converts from python dictionary -> json
+flask can do this by itself for simple types, but for MongoDB's ObjectIds
+special handling is needed
+"""
+
+"""
+for post requests, data will be sent via a JSON payload + path
+access via request.get_json()
+note: react server will have to send content type header
+"""
 @app.route("/newlist", methods=['POST'])
 def new_list():
-    user = 'username'
-    list_name = 'xxx'
-    tasks = []
-    db.new_list(user, list_name, tasks)
-    print('new_list has ran')
+    email = 'username@example.com'
+    data = request.get_json()
+    if not data:
+        return {'success': False, 'message': 'invalid data'}
+    title = data.get('title')
+    if not title:
+        return {'success': False, 'message': 'invalid data'}
+    # list always starts with 0 tasks
+    return json_util.dumps(db.new_list(email, title))
 
-@app.route("/getlist", methods=['GET'])
-def get_list():
-    list_name = 'xxx'
-    db.get_list(list_name)
-    return 
+# TODO: get user from cookie header
+
+"""
+for get requests, data will be encoded via path 
+i.e /getlist/list-id/
+the way you do this in flask is
+@app.route('/getlist/type:name')
+then
+def func(name): ...
+"""
+@app.route("/getlist/<string:list_id>", methods=['GET'])
+def get_list(list_id):
+    email = 'username@example.com'
+    # in this case, db.get_list returns appropriate json that we can just forward
+    return json_util.dumps(db.get_list(email, list_id))
+
 
 @app.route("/getlists", methods=['GET'])
 def get_lists():
-    db.get_lists()
-    return 
+    email = 'username@example.com'
+    # TODO any processing. (task ids not really needed to send back)
+    return json_util.dumps(db.get_lists(email))
 
-@app.route("/updatelist", methods=['POST'])
-def update_list():
-    return 
+"""
+for post requests, data will be sent via a JSON payload + path
+access via request.get_json()
+note: react server will have to send content type header
+"""
+@app.route("/updatelist/<string:list_id>", methods=['POST'])
+def update_list(list_id):
+    email = 'username@example.com'
+    data = request.get_json()
+    if not data:
+        return {'success': False, 'message': 'invalid data'}
+    newtitle = data.get('title', '')
+    if not newtitle:
+        return {'success': False, 'message': 'invalid data'}
+    # TODO db.update_list(email, list_id, newtitle)
 
-@app.route("/deletelist", methods=['POST'])
-def delete_list():
-    return 
+@app.route("/deletelist/<string:list_id>", methods=['POST'])
+def delete_list(list_id):
+    email = 'username@example.com'
+    return json_util.dumps(db.delete_list(email, list_id))
 
 @app.route("/gettask", methods=['GET'])
 def get_task():
@@ -61,5 +103,3 @@ def update_task():
 @app.route("/deletetask", methods=['POST'])
 def delete_task():
     return 
-
-new_list()

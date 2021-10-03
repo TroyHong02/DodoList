@@ -33,10 +33,9 @@ tasks {
 
 
 # TODO can merge new_list and update list to update with upsert = true
-# unique list name as key..
 
 # TODO 2 get list id before insert, then update user once, instead of finding -> list insert -> update
-def new_list(email, list_name, tasks):
+def new_list(email, list_name):
 
     user = users.find_one({'email': email})
     if not user:
@@ -47,7 +46,7 @@ def new_list(email, list_name, tasks):
 
     res = lists.insert_one({
         'list_name': list_name,
-        'tasks': tasks,
+        'tasks': [],
     })
 
     _id = res.inserted_id
