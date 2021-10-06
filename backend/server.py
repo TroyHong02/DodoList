@@ -88,18 +88,38 @@ def delete_list(list_id):
     email = 'username@example.com'
     return json_util.dumps(db.delete_list(email, list_id))
 
-@app.route("/gettask", methods=['GET'])
-def get_task():
-    return 
+@app.route("/gettask/<string:task_id>", methods=['GET'])
+def get_task(task_id):
+    email = 'username@example.com'
+    return json_util.dumps(db.get_task(email, task_id))
 
-@app.route("/newtask", methods=['POST'])
+@app.route("/newtask/<string:task_id>", methods=['POST'])
 def new_task():
-    return 
+    email = 'username@example.com'
+    data = request.get_json()
+    if not data:
+        return {'success': False, 'message': 'invalid data'}
+    list_id = data.get('list_id')
+    if not list_id:
+        return {'success': False, 'message': 'invalid data'}
+    task_name = data.get('task_name')
+    if not task_name:
+        return {'success': False, 'message': 'invalid data'}
+    task_desc = data.get('task_desc')
+    if not task_desc:
+        return {'success': False, 'message': 'invalid data'}
+    due_date = data.get('due_date')
+    if not due_date:
+        return {'success': False, 'message': 'invalid data'}
+    return json_util.dumps(db.new_task(email, list_id, task_name, task_desc, due_date))
+
 
 @app.route("/updatetask", methods=['POST'])
 def update_task():
     return 
+    #TODO implement update_task in db
 
-@app.route("/deletetask", methods=['POST'])
-def delete_task():
-    return 
+@app.route("/deletetask/<string:task_id>", methods=['POST'])
+def delete_task(list_id, task_id):
+    email = 'username@example.com'
+    return json_util.dumps(db.delete_task(email, list_id, task_id))

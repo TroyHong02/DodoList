@@ -149,8 +149,7 @@ def get_tasks(email, list_id):
     
     return {'success': True, 'data': list(res)}
 
-#last
-# def update_task():
+#TODO def update_task():
 
 def delete_task(email, list_id, task_id):
 
