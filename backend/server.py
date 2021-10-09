@@ -93,7 +93,7 @@ def get_task(task_id):
     email = 'username@example.com'
     return json_util.dumps(db.get_task(email, task_id))
 
-@app.route("/newtask/<string:task_id>", methods=['POST'])
+@app.route("/newtask", methods=['POST'])
 def new_task():
     email = 'username@example.com'
     data = request.get_json()
@@ -119,7 +119,18 @@ def update_task():
     return 
     #TODO implement update_task in db
 
-@app.route("/deletetask/<string:task_id>", methods=['POST'])
-def delete_task(list_id, task_id):
+@app.route("/deletetask", methods=['POST'])
+def delete_task():
     email = 'username@example.com'
+    data = request.get_json()
+    if not data:
+        return {'success': False, 'message': 'invalid data'}
+
+    list_id = data.get('list_id')
+    if not list_id:
+        return {'success': False, 'message': 'invalid data'}
+        
+    task_id = data.get('task id')
+    if not task_id:
+        return {'success': False, 'message': 'invalid data'}
     return json_util.dumps(db.delete_task(email, list_id, task_id))
