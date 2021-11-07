@@ -1,18 +1,30 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import "../styles.css";
 
-export default class NewListPopUp extends Component {
-    handleClick = () => {
-        this.props.toggle();
+export default function NewListPopUp(props) {
+
+    let [listName, setListName] = useState("");
+
+    let handleClick = () => {
+        props.toggle();
     };
-    render() {
-        return (
-            <div className="modal">
-                <div className="modal_content">
-                <span onClick={this.handleClick}>&times; </span>
-                <p>I'm A Pop Up!!!</p>
-                </div>
-            </div>
-        );
+    let handleSubmit = () => {
+        props.toggle();
+        props.createNewList(listName);
     }
+    let handleOnChange = (event) => {
+        setListName(event.target.value);
+    }
+
+
+    return (
+        <div className="modal">
+            <div className="modal_content">
+            <span onClick={handleClick}>&times; </span>
+            <p>Enter List Name</p>
+            <input onChange={handleOnChange}></input>
+            <button onClick={handleSubmit}>Create List</button>
+            </div>
+        </div>
+    );
 }
