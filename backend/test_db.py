@@ -1,6 +1,6 @@
 import db
 
-db.new_list('username@example.com', 'yyy', [])
+db.new_list('username@example.com', 'yyy')
 
 res = db.get_lists('username@example.com')
 
@@ -44,14 +44,14 @@ print(tasks)
 # print(tasks_after_del)
 
 
-del_list = db.delete_list('username@example.com', lst1_id)
+# del_list = db.delete_list('username@example.com', lst1_id)
 
-print(del_list)
+# print(del_list)
 
-after_del_list = db.get_lists('username@example.com')
+# after_del_list = db.get_lists('username@example.com')
 
 #lists += None everytime this file is run. Error? or not?!?
-print('lists = ', after_del_list['data'])
+# print('lists = ', after_del_list['data'])
 # for task in 
 
 # task1_id = db.get_task('username@example.com', res)

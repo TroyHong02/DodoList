@@ -41,7 +41,6 @@ def new_list(email, list_name):
     if not user:
         return {'success': False, 'message': 'user not found'}
 
-    print(user)
     user_id = user['_id']
 
     res = lists.insert_one({
@@ -56,7 +55,6 @@ def new_list(email, list_name):
         '$push': { 'lists': _id }
     })
 
-    print(user)
     return {'success': True, 'message': 'new list created'}
 
 def get_list(email, id):
@@ -76,9 +74,6 @@ def get_lists(email):
     user = users.find_one({'email': email})
     if not user:
         return {'success': False, 'message': 'user not found'}
-
-    print("user get lists:")
-    print(user)
 
     res = [None] * len(user['lists'])
 
@@ -115,7 +110,7 @@ def new_task(email, list_id, task_name, task_desc, due_date):
     lists.update({'_id': list_id}, {
         '$push': { 'tasks': _id }
     })
-    print(res)
+
     return {'success': True, 'message': 'task successfully created'}
 
 def get_task(email, task_id):
