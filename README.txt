@@ -1,1 +1,1 @@
-patent trademark copyright pending
+#DodoList, a To-Do List App!
